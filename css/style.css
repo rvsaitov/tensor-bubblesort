@@ -1,0 +1,87 @@
+* {
+	margin: 0;
+	padding: 0;
+	outline: none;
+}
+
+body {
+	font-family: 'Open Sans', Verdana, sans-serif;
+}
+
+.wrapper {
+	width: 80%;
+	margin: 0 auto;
+}
+
+.header {
+	
+}
+
+.title {
+	text-align: center;
+	padding: 10px;
+}
+
+.instruction {
+	
+}
+
+.instruction__list {
+	list-style: none;
+	padding: 20px;
+}
+
+.main {
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: center;
+}
+
+.unsort-title, .sort-title {
+	text-align: center;
+}
+
+.unsort-array, .sort-array {
+	width: 100%;
+	text-align: center;
+	margin-top: 20px;
+	height: 200px;
+	display: flex;
+	align-items: center;
+}
+
+.button-wrapper {
+	display: flex;
+	width: 100%;
+	height: 150px;
+	justify-content: center;
+	align-items: center;
+}
+
+.play-button, .newarr-button {
+	background: #9CA8C3;
+    height: 30px;
+    line-height: 30px;
+    width: 200px;
+    text-align: center;
+    padding: 10px;
+    border-radius: 40px;
+    color: #28385F;
+    text-decoration: none;
+    font-weight: bold;
+    text-shadow: 0.5px 0px 0px rgba(50, 50, 50, 0.5);
+}
+
+.play-button:hover, .newarr-button:hover {
+	background: #8AA8CC;
+    font-size: 1.2em;
+    transition: 0.3s all ease;
+	cursor: pointer;
+}
+
+/* Стили для пузырей */
+
+.bubble {
+	background: #ccf;
+	border-radius: 50%;
+}
