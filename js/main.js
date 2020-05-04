@@ -3,8 +3,18 @@
 function init() {
 	const bubbles = new BubbleSort();
 	bubbles.render();
-	document.querySelector('.play-button').addEventListener('click', bubbles.sortBubbles.bind(bubbles));
-	document.querySelector('.newarr-button').addEventListener('click', bubbles.render.bind(bubbles));
+	document.querySelector('.play-button').addEventListener('click', onStart);
+	document.querySelector('.newarr-button').addEventListener('click', onReset);
+	
+	function onStart() {
+		bubbles.sortBubbles();
+		document.querySelector('.play-button').disabled = true;
+	}
+	
+	function onReset() {
+		bubbles.render();
+		document.querySelector('.play-button').disabled = false;
+	}
 }
 
 class BubbleSort {
@@ -14,20 +24,21 @@ class BubbleSort {
 		this.maxValue = 15;
 	}
 	
-	generateBubbleValues() {
+	generateBubbles() {
 		this.bubbles = [];
 		this.bubblesElement = [];
 		for (let i = 0; i < this.countBubbles; i++) {
-			this.bubbles.push(Math.floor(this.minValue + Math.random() * (this.maxValue + 1 - this.minValue)));
+			const bubble = new Bubble();
+			this.bubbles.push(bubble.getSize());
+			this.bubblesElement.push(bubble);
 		}
 	}
 	
 	render() {
+		clearTimeout(this.timeoutId);
 		this.clear();
-		this.generateBubbleValues();
-		for (let size of this.bubbles) {
-			const bubble = new Bubble(size);
-			this.bubblesElement.push(bubble);
+		this.generateBubbles();
+		for (let bubble of this.bubblesElement) {
 			bubble.render();
 		}
 	}
@@ -38,28 +49,36 @@ class BubbleSort {
 	}
 	
 	sortBubbles() {
-		for (let i = this.bubbles.length - 1; i > 0; i--) {
-			for (let j = 0; j < i; j++) {
-				if (this.bubbles[j] > this.bubbles[j + 1]) {
-					[this.bubbles[j], this.bubbles[j + 1]] = [this.bubbles[j + 1], this.bubbles[j]];
-					this.swapBubbles(j);
+		const self = this;
+		function* gen() {
+			for (let i = self.bubbles.length - 1; i > 0; i--) {
+				for (let j = 0; j < i; j++) {
+					if (self.bubbles[j] > self.bubbles[j + 1]) {
+						[self.bubbles[j], self.bubbles[j + 1]] = [self.bubbles[j + 1], self.bubbles[j]];
+						yield self.swapBubbles(j);
+					}
 				}
+				self.bubblesElement[i].fillBubble();
 			}
+			self.bubblesElement[0].fillBubble();
 		}
+		
+		let generator = gen();
+		
+		(function nextIteration() {
+			generator.next();
+			self.timeoutId = setTimeout(nextIteration, 500);
+		})();
 	}
 	
 	swapBubbles(currentIndex) {
 		const currentElement = this.bubblesElement[currentIndex];
 		const nextElement = this.bubblesElement[currentIndex + 1];
+		
 		[this.bubblesElement[currentIndex], this.bubblesElement[currentIndex + 1]] = [this.bubblesElement[currentIndex + 1], this.bubblesElement[currentIndex]];
+		
 		const delta1 = nextElement.diameter + 20;
 		const delta2 = -1 * (currentElement.diameter + 20);
-		
-		//currentElement.createClone();
-		//nextElement.createClone();
-		
-		//currentElement.hide();
-		//nextElement.hide();
 		
 		currentElement.move(delta1);
 		nextElement.move(delta2);
@@ -67,13 +86,24 @@ class BubbleSort {
 }
 
 class Bubble {
-	constructor(size) {
+	constructor() {
 		const coeff = 10;
 		
 		this.position = 0;
-		this.size = size;
-		this.diameter = size * coeff + 30;
+		this.size = this.generateBubbleSize();
+		this.diameter = this.size * coeff + 30;
 		this.create();
+	}
+	
+	generateBubbleSize() {
+		const minValue = 1;
+		const maxValue = 15;
+		
+		return Math.floor(minValue + Math.random() * (maxValue + 1 - minValue));
+	}
+	
+	getSize() {
+		return this.size;
 	}
 	
 	create() {
@@ -91,31 +121,13 @@ class Bubble {
 	}
 
 	move(delta) {
-		//this.clone.style.left = parseInt(this.clone.style.left, 10) + delta + 'px';
-		//this.clone.remove();
-		//this.show();
 		this.position = delta + this.position
 		this.element.style.transform = `translateX(${this.position}px)`;
-		this.element.style.transition = `1s transform ease`;
+		this.element.style.transition = `0.5s transform ease`;
 	}
 	
-	getElement() {
-		return this.element;
-	}
-	
-	createClone() {
-		this.clone = this.element.cloneNode(true);
-		this.clone.style.position = 'absolute';
-		this.clone.style.left = this.element.offsetLeft - 10 + 'px';
-		this.element.after(this.clone);
-	}
-	
-	hide() {
-		this.element.style.visibility = 'hidden';
-	}
-	
-	show() {
-		this.element.style.visibility = 'visible';
+	fillBubble() {
+		this.element.style.backgroundColor = 'black';
 	}
 }
 
