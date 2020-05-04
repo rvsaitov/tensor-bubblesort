@@ -20,8 +20,6 @@ function init() {
 class BubbleSort {
 	constructor(countBubbles) {
 		this.countBubbles = countBubbles || 10;
-		this.minValue = 1;
-		this.maxValue = 15;
 	}
 	
 	generateBubbles() {
@@ -48,6 +46,10 @@ class BubbleSort {
 		document.querySelector('.unsort-array').innerHTML = '';
 	}
 	
+	/**
+	 * Метод сортирует элементы в массиве и меняет их местами на странице
+	 * Реализовано с помощью генератора, т.к. обычный цикл for не позволяет задержаться на каждой итерации
+	 */
 	sortBubbles() {
 		const self = this;
 		function* gen() {
@@ -67,7 +69,7 @@ class BubbleSort {
 		
 		(function nextIteration() {
 			generator.next();
-			self.timeoutId = setTimeout(nextIteration, 500);
+			self.timeoutId = setTimeout(nextIteration, 1000);
 		})();
 	}
 	
@@ -90,20 +92,20 @@ class Bubble {
 		const coeff = 10;
 		
 		this.position = 0;
-		this.size = this.generateBubbleSize();
+		this.size = this.generateSize();
 		this.diameter = this.size * coeff + 30;
 		this.create();
 	}
 	
-	generateBubbleSize() {
+	getSize() {
+		return this.size;
+	}
+	
+	generateSize() {
 		const minValue = 1;
 		const maxValue = 15;
 		
 		return Math.floor(minValue + Math.random() * (maxValue + 1 - minValue));
-	}
-	
-	getSize() {
-		return this.size;
 	}
 	
 	create() {
@@ -111,6 +113,7 @@ class Bubble {
 		this.element.className = 'bubble';
 		this.element.style.width = this.diameter + 'px';
 		this.element.style.height = this.diameter + 'px';
+		this.element.style.lineHeight = this.diameter + 'px';
 		this.element.textContent = this.size;
 	}
 	
@@ -123,11 +126,12 @@ class Bubble {
 	move(delta) {
 		this.position = delta + this.position
 		this.element.style.transform = `translateX(${this.position}px)`;
-		this.element.style.transition = `0.5s transform ease`;
+		this.element.style.transition = `1s transform ease`;
 	}
 	
 	fillBubble() {
-		this.element.style.backgroundColor = 'black';
+		this.element.style.background = 'linear-gradient(0, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.8) 60%, rgba(0,0,0,0.9) 100%)';
+		this.element.style.color = '#ccc';
 	}
 }
 
